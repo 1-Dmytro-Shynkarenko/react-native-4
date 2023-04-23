@@ -13,7 +13,7 @@ import { StyleSheet, Text, ImageBackground,
  
     const register =()=> {
      if (!mail || !password) { alert("Enter all data pleace!!!"); return }
-    //  console.log(`Email: ${ mail }, Password: ${password}`)
+    console.log(`Email: ${ mail }, Password: ${password}`)
     }
  
     const passwShow =()=> alert(`Your password is: ${password}`);
