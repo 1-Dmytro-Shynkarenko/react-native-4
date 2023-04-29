@@ -1,36 +1,40 @@
-import { StatusBar  } from 'expo-status-bar';
-import { StyleSheet, ImageBackground, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import React, { useState } from "react";
-import RegistrationScreen from './Screens/RegistrationScreen/RegistrationScreen';
-import LoginScreen from './Screens/LoginScreen/LoginScreen'
+import { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native"; // как провайдер в реакте обвертка BrowserRouter
 
-const backImage = require('./Source/Photo_BG.png');
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
+
+import useRoute from "./router";
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const [fontIsLoaded, setFontIsLoaded] = useState(false);
+  const routing = useRoute();
 
-   const [activeScreen, setActiveScreen] = useState(0);
-   const changeScrennFunc = (value) => { setActiveScreen (value) }
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
 
-  return (
-  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={styles.maincontainer}>
-      <ImageBackground source={backImage} style={styles.backImg} >
-        { activeScreen=== 0 ? <LoginScreen changeScrenn={ changeScrennFunc }/> :
-         <RegistrationScreen changeScrenn={ changeScrennFunc }/>}
-        </ImageBackground>
-        <StatusBar style="auto" />  
-    </View>
-  </TouchableWithoutFeedback>);
+        await Font.loadAsync({
+          "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+          "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+       
+        });
+
+        await SplashScreen.hideAsync();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setFontIsLoaded(true);
+      }
+    }
+    prepare();
+  }, []);
+
+  if (!fontIsLoaded) {
+    return null;
+  }
+
+  return <NavigationContainer>{routing}</NavigationContainer>;
 }
-
-const styles = StyleSheet.create({
-  maincontainer: {
-    flex: 1,
-    alignItems: 'center',
-  }, 
-  backImg: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    width: '100%'
-  },
-});
